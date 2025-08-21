@@ -8,11 +8,11 @@ import MarketNews from "../components/charts/LineChart";
 const HomePage = () => {
   return (
     <>
-      <AppNavbar />
+      {/* <AppNavbar /> */}
       <HeroSection />
       <PriceChart/>
       <MarketNews/>
-      <AppFooter/>
+      {/* <AppFooter/> */}
     </>
   );
 };

@@ -1,0 +1,48 @@
+body {
+  background-color: #0f0e0d;
+  color: #fff;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.page-container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.time-filters button {
+  background-color: #222;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+}
+
+.time-filters button.active {
+  background-color: #3b3a36;
+}
+
+.chart-card {
+  background-color: #131210;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.chart-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.chart-sub {
+  color: #aaa;
+  margin-top: 4px;
+}

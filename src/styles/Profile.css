@@ -1,0 +1,115 @@
+body {
+  background-color: #12100e;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.profile-paage {
+  min-height: 100vh;
+}
+
+/* Profile Section */
+.profile-container {
+  margin-top: 50px;
+}
+
+.profile-immg {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.profile-naame {
+  font-weight: bold;
+}
+
+.profile-emmail {
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+/* Preferences */
+.preferences {
+  margin: 30px auto;
+  max-width: 300px;
+}
+
+.preferences h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Currency Dropdown – dark, rounded, modern */
+.currency-dropdown .custom-toggle {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  font-size: 15px;
+  padding: 10px 14px;
+  color: #e8e8e8;
+  box-shadow: none;
+  transition: background .15s ease, border-color .15s ease;
+}
+.currency-dropdown .custom-toggle:hover {
+  background: #242424;
+  border-color: #444;
+}
+
+.currency-dropdown .dropdown-menu {
+  background: #121212;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 6px;
+}
+.currency-dropdown .dropdown-item {
+  color: #e6e6e6;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.currency-dropdown .dropdown-item:hover {
+  background: #1b1b1b;
+}
+.currency-dropdown .dropdown-item.active,
+.currency-dropdown .dropdown-item:active {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+
+/* Account */
+.account {
+  margin: 30px auto;
+  max-width: 300px;
+}
+
+.account h5 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  color: #fff;
+  cursor: pointer;
+}
+
+.account-item:hover {
+  color: #d4af37;
+}
+
+/* Logout */
+.logout-btn {
+  background-color: #2c2a27;
+  border: none;
+  margin-top: 20px;
+  padding: 10px 25px;
+  border-radius: 25px;
+}
+
+.logout-btn:hover {
+  background-color: #d4af37;
+  color: #000;
+}

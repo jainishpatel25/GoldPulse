@@ -70,16 +70,18 @@ function CustomNavbar() {
   return (
     <Navbar expand="lg" className="custom-navbar px-4">
       {/* Logo */}
-      <Navbar.Brand href="#home" className="d-flex align-items-center text-white fw-bold">
+      <Navbar.Brand href="/" className="d-flex align-items-center text-white fw-bold">
         <span className="me-2">🥇</span> Gold Tracker
       </Navbar.Brand>
 
       {/* Nav Links */}
       <Nav className="me-auto ms-4">
-        <Nav.Link href="#home" className="nav-link-custom">Home</Nav.Link>
-        <Nav.Link href="/goldsection" className="nav-link-custom">Prices</Nav.Link>
-        <Nav.Link href="#news" className="nav-link-custom">News</Nav.Link>
-        <Nav.Link href="#analysis" className="nav-link-custom">Analysis</Nav.Link>
+        <Nav.Link href="/" className="nav-link-custom">Home</Nav.Link>
+        <Nav.Link href="/predicationpage" className="nav-link-custom">Prices</Nav.Link>
+        <Nav.Link href="/mygold" className="nav-link-custom">News</Nav.Link>
+        <Nav.Link href="/setalert" className="nav-link-custom">Analysis</Nav.Link>
+        <Nav.Link href="/contact" className="nav-link-custom">Contact Us</Nav.Link>
+         <Nav.Link href="/profile" className="nav-link-custom">Profile Page</Nav.Link>
       </Nav>
 
       {/* Search */}

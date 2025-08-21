@@ -1,0 +1,112 @@
+/* ==============================
+   Predictions Page Styling
+============================== */
+
+.predictions-page {
+  background: #12100e; /* same base as price-chart-section */
+  min-height: 100vh;
+  padding: 40px 20px;
+  color: #f5f5f5;
+}
+
+/* Headings */
+.predictions-page h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.predictions-page p {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+/* Prediction Cards */
+.predictions-card {
+  background: #1a1816;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.predictions-card h5 {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 5px;
+}
+
+.predictions-card h4 {
+  color: #d4af37; /* gold highlight */
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.predictions-card span {
+  font-size: 0.9rem;
+}
+
+.predictions-card:hover {
+  transform: translateY(-5px);
+  border-color: #d4af37;
+  box-shadow: 0px 4px 10px rgba(212, 175, 55, 0.2);
+}
+
+/* Chart Section */
+.predictions-chart {
+  background: #1a1816;
+  border: 1px solid #333;
+  border-radius: 16px;
+  padding: 25px;
+  margin-top: 20px;
+}
+
+.predictions-chart h5 {
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #888;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.predictions-chart h3 {
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+}
+
+.predictions-chart p {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+/* Footer Note + Button */
+.predictions-footer {
+  background: #1a1816;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.predictions-footer p {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.predictions-export-btn {
+  background: #3b352e;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-weight: 500;
+  color: #fff;
+  transition: 0.3s;
+}
+
+.predictions-export-btn:hover {
+  background: #d4af37;
+  color: #000;
+}
