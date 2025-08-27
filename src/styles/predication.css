@@ -1,12 +1,11 @@
-/* ==============================
-   Predictions Page Styling
-============================== */
+
 
 .predictions-page {
-  background: #12100e; /* same base as price-chart-section */
+  background-color: #12100E; /* same base as price-chart-section */
   min-height: 100vh;
   padding: 40px 20px;
   color: #f5f5f5;
+  
 }
 
 /* Headings */

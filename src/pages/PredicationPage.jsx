@@ -87,7 +87,7 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import "../styles/predication.css"; // ✅ fixed file name
+import "../styles/predication.css"; 
 
 const fakePredictions = [
   { label: "Tomorrow", price: "$2,050.25", change: "+0.5%" },
@@ -106,7 +106,7 @@ const fakeChartData = [
 
 const PredictionsPage = () => {
   return (
-    <div className="predictions-page bg-dark text-light py-5">
+    <div className="predictions-page text-light py-5">
       <Container>
         {/* Heading */}
         <h2 className="fw-bold">Predictive Analytics</h2>
@@ -139,14 +139,14 @@ const PredictionsPage = () => {
             <ResponsiveContainer>
               <LineChart data={fakeChartData}>
                 <XAxis dataKey="month" stroke="#aaa" />
-                <YAxis hide />
+                <YAxis/>
                 <Tooltip />
                 <Line
                   type="monotone"
                   dataKey="price"
                   stroke="#d4af37"
                   strokeWidth={3}
-                  dot={false}
+                  dot={true}
                 />
               </LineChart>
             </ResponsiveContainer>

@@ -1,0 +1,12 @@
+/* Ensure everything aligns within consistent space */
+.site-container {
+  max-width: 1300px; /* Adjust width of content */
+  margin: 0 auto;    /* Center horizontally */
+  padding: 0 10px;   /* Side spacing (20px each side) */
+}
+
+/* Remove unwanted browser default margins */
+body, html {
+  margin: 0;
+  padding: 0;
+}
