@@ -32,7 +32,7 @@ function App() {
          <Route path="/changepassword" element={<ChangePasswordPage />} />
          <Route path="/predicationpage" element={<PredictionsPage />} />
       </Routes>
-      {/* <AppFooter /> */}
+      <AppFooter />
     </Router>
     </div>
   );

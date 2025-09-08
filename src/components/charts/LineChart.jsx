@@ -1,5 +1,3 @@
-
-import React from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import "../../styles/main.css"; // keep your global css
 

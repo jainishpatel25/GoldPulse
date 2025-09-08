@@ -134,151 +134,24 @@
 
 
 
-/* Market News Section */
+
 .market-news-section {
-  background-color: #111111; /* dark background */
+  background-color: 12100E; 
   padding: 50px 0;
 }
 
-/* Adjust text-muted to be softer on dark background */
 .market-news-section .text-muted {
   color: #b3b3b3 !important;
 }
 
- /* invesment page */
-
-/* Page */
-.gold-page {
-  background: #0d0d0d;
-  min-height: 100vh;
-  color: #fff;
-}
-
-/* Stat Cards */
-.stat-card {
-  background: #1c1c1c;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: left;
-}
-.stat-card .label {
-  font-size: 14px;
-  color: #aaa;
-}
-
-/* Form Section */
-.form-section {
-  background: #1c1c1c;
-  padding: 20px;
-  border-radius: 12px;
-}
-.gold-form input,
-.gold-form select {
-  background: #222;
-  color: #fff;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 10px;
-}
-.gold-form input::placeholder {
-  color: #888;
-}
-.preview {
-  font-size: 14px;
-  color: #aaa;
-}
-.add-btn {
-  background: #f5a623 !important;
-  color: #000;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-}
-
-/* Filter Buttons */
-.filter-btn {
-  background: #2a2a2a;
-  border: none;
-  padding: 8px 18px;
-  margin-right: 10px;
-  border-radius: 20px;
-  cursor: pointer;
-  color: #fff;
-}
-.filter-btn.active {
-  background: #f5a623;
-  color: #000;
-}
-
-/* Custom Table */
-/* .custom-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #1c1c1c;
-  border-color: #333;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.custom-table th,
-.custom-table td {
-  padding: 14px;
-  text-align: left;
-  border: 1px solid #333;
-}
-.custom-table th {
-  color: #aaa;
-  background-color: #333;
+.footer-link {
+  color: #d4d4d4 !important;
+  margin: 5px 15px;
   font-weight: 500;
 }
-.custom-table tr:last-child td {
-  border-bottom: none;
+
+.footer-link:hover {
+  color: #d4af37 !important; /* gold hover */
 }
 
-.custom-table th,
-.custom-table td {
-  border-left: none !important;
-  border-right: none !important;
-}
 
-/* Keep nice horizontal lines */
-/* .custom-table th,
-.custom-table td {
-  border-top: 1px solid #333 !important;
-}
-
-.custom-table thead th {
-  border-bottom: 2px solid #333 !important; 
-} */ 
-.custom-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ded8d8;   /* outer border only */
-  border-radius: 10px;      /* rounded corners */
-  overflow: hidden;         /* keeps corners clean */
-  background: #1c1a16;      /* dark background */
-  color: #ddd;              /* text color */
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-}
-
-.custom-table th,
-.custom-table td {
-  padding: 14px 18px;
-  text-align: left;
-}
-
-.custom-table thead th {
-  background: #24211c;      /* darker header */
-  font-weight: 600;
-  color: #fff;
-  border-bottom: 1px solid #333;
-}
-
-.custom-table tbody td {
-  border-top: 1px solid #333;  /* horizontal lines only */
-}
-
-.custom-table tbody tr:last-child td {
-  border-bottom: none;         /* no extra line at bottom */
-}

@@ -109,3 +109,69 @@
   background: #d4af37;
   color: #000;
 }
+/* Responsive adjustments */
+
+/* Stack prediction cards vertically on small screens */
+@media (max-width: 767.98px) {
+  .predictions-page .predictions-card {
+    margin-bottom: 20px;
+    background: #181613;            /* lighter card for more contrast */
+    border: 1px solid #282623;      /* subtle border */
+    border-radius: 14px;
+  }
+  .predictions-page .predictions-card:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Scale card fonts and padding for extra small screens */
+@media (max-width: 575.98px) {
+  .predictions-page h2 {
+    font-size: 1.5rem;
+  }
+
+  .predictions-page p,
+  .predictions-card h5,
+  .predictions-chart h5,
+  .predictions-footer p {
+    font-size: 0.8rem;
+  }
+
+  .predictions-card h4 {
+    font-size: 1.25rem;
+  }
+
+  .predictions-chart h3 {
+    font-size: 1.3rem;
+  }
+
+  .predictions-card {
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .predictions-chart {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .predictions-footer {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .predictions-export-btn {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 0.9rem;
+  }
+}
+
+/* Ensure chart container fills width on small screens */
+@media (max-width: 575.98px) {
+  .predictions-chart > div {
+    width: 100% !important;
+    height: 200px !important;
+    min-width: 0;
+  }
+}

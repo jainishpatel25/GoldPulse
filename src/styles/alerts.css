@@ -1,6 +1,5 @@
 /* Canvas */
 .alerts-page {
-  --bg: #0f0f0e;
   --panel: #1a1815;
   --panel-2: #201d19;
   --line: #3a352c;
@@ -56,15 +55,27 @@
   border-radius: 10px;
   color: var(--text);
   padding: 0 14px;
+  padding-right: 3rem; /* Add extra right padding to make space for arrow */
   outline: none;
   transition: border-color .15s ease, box-shadow .15s ease;
+  appearance: none;          /* Remove default browser arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23626262" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom arrow (gray triangle) */
+  background-repeat: no-repeat;
+  background-position: right 1rem center;  /* Move the arrow 1rem from right edge, vertically centered */
+  background-size: 1rem;
 }
-.control::placeholder { color: var(--muted); }
+
+.control::placeholder {
+  color: var(--muted);
+}
 
 .control:focus {
   border-color: #caa24a !important;
   box-shadow: 0 0 0 2px rgba(202,162,74,.15);
 }
+
 
 /* CTA */
 .gold-btn {
@@ -138,3 +149,83 @@
 .link-btn:hover { text-decoration: underline; }
 .link-btn.danger { color: #f0a6a6; }
 .sep { margin: 0 8px; color: #6b6458; }
+
+/* Hide default number input spinners */
+
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.number-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.number-input-wrapper input[type="number"] {
+  padding-right: 45px !important; /* space for spinner buttons */
+}
+
+.spinner-buttons {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 0.375rem 0.375rem 0;
+  overflow: hidden;
+}
+
+.spinner-btn {
+  flex: 1;
+  background:var(--panel-2);
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.spinner-btn:hover {
+  /* background: #4b5563; */
+  color: #ffa500;
+}
+
+.spinner-btn:active {
+  background: #ffa500;
+  color: #1f2937;
+  transform: scale(0.95);
+}
+
+.spinner-btn:first-child {
+  /* border-bottom: 1px solid #4a5568; */
+}
+
+.spinner-btn::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.spinner-btn.up::before {
+  border-bottom: 6px solid currentColor;
+}
+
+.spinner-btn.down::before {
+  border-top: 6px solid currentColor;
+}

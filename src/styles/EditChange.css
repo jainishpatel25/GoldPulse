@@ -16,3 +16,106 @@
 .save-btn:hover {
   background-color: #d4af37;
 }
+/* Container and layout */
+.profile-page {
+  background-color: #12100E;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.profile-container {
+  /* background-color: #1c1b18; */
+  border-radius: 16px;
+  padding: 40px 30px;
+  max-width: 450px;
+  width: 100%;
+  /* box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6); */
+  color: #e4dccc;
+}
+
+/* Headings */
+.profile-container h3 {
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 30px;
+  color: #d4af37;
+  text-align: center;
+}
+
+/* Inputs */
+.profile-input {
+  background-color: #2f2a23;
+  border: 1px solid #493f35;
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #e4dccc;
+  font-size: 1rem;
+  transition: border-color 0.25s ease;
+}
+
+.profile-input::placeholder {
+  color: #aa9e77;
+  opacity: 1;
+}
+
+.profile-input:focus {
+  border-color: #d4af37;
+  outline: none;
+  box-shadow: 0 0 6px 2px rgba(212, 175, 55, 0.6);
+  background-color: #3b3428;
+  color: #fff;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 25px;
+}
+
+/* Buttons */
+.save-btn {
+  background-color: #d4af37;
+  color: #1c1b18;
+  border: none;
+  border-radius: 25px;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+}
+
+.save-btn:hover,
+.save-btn:focus {
+  background-color: #c2a03a;
+  color: #f9f9f9;
+  outline: none;
+  box-shadow: 0 0 10px 2px rgba(194, 160, 58, 0.7);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 30px 20px;
+    border-radius: 12px;
+  }
+  
+  .profile-container h3 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+  
+  .profile-input {
+    font-size: 0.95rem;
+  }
+  
+  .save-btn {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}

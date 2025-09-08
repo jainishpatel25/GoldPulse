@@ -54,7 +54,7 @@ import "../styles/main.css";
 
 function Overview() {
   return (
-    <div className="overview-container px-3 px-md-4 py-4 py-md-5">
+    <div className="overview-container px-3 px-md-4 py-4 py-md-4">
       <h2 className="overview-title text-center text-md-start">
         Gold Market Overview
       </h2>

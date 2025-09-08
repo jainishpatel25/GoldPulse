@@ -1,142 +1,48 @@
-// // PriceAlertPage.jsx
-// import React, { useState } from "react";
-// import { Container, Row, Col, Card, Form, Button, Table } from "react-bootstrap";
 
-// const PriceAlertPage = () => {
-//   const [alerts, setAlerts] = useState([
-//     { id: 1, type: "24K", condition: "Above", price: "65000", notify: "Email" },
-//     { id: 2, type: "22K", condition: "Below", price: "55000", notify: "In-App" },
-//   ]);
-
-//   const [history] = useState([
-//     { id: 1, type: "24K", condition: "Above", price: "60000", triggeredAt: "2025-08-01 10:00 AM" },
-//     { id: 2, type: "22K", condition: "Below", price: "50000", triggeredAt: "2025-08-05 03:15 PM" },
-//   ]);
-
-//   return (
-//     <Container className="my-5">
-//       <Row className="justify-content-center">
-//         <Col md={8}>
-//           <Card className="shadow-lg p-4">
-//             <h3 className="text-center mb-4">Set Price Alert</h3>
-
-//             {/* --- Price Alert Form --- */}
-//             <Form className="mb-4">
-//               <Row>
-//                 <Col md={6} className="mb-3">
-//                   <Form.Group>
-//                     <Form.Label>Gold Type</Form.Label>
-//                     <Form.Select>
-//                       <option>24K</option>
-//                       <option>22K</option>
-//                       <option>18K</option>
-//                     </Form.Select>
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6} className="mb-3">
-//                   <Form.Group>
-//                     <Form.Label>Condition</Form.Label>
-//                     <Form.Select>
-//                       <option>Above</option>
-//                       <option>Below</option>
-//                       <option>Equals</option>
-//                     </Form.Select>
-//                   </Form.Group>
-//                 </Col>
-//               </Row>
-
-//               <Row>
-//                 <Col md={6} className="mb-3">
-//                   <Form.Group>
-//                     <Form.Label>Target Price (₹)</Form.Label>
-//                     <Form.Control type="number" placeholder="Enter price" />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6} className="mb-3">
-//                   <Form.Group>
-//                     <Form.Label>Notify By</Form.Label>
-//                     <Form.Select>
-//                       <option>Email</option>
-//                       <option>In-App</option>
-//                       <option>Both</option>
-//                     </Form.Select>
-//                   </Form.Group>
-//                 </Col>
-//               </Row>
-
-//               <div className="text-center">
-//                 <Button variant="primary" className="px-4">
-//                   Set Alert
-//                 </Button>
-//               </div>
-//             </Form>
-
-//             {/* --- Active Alerts Section --- */}
-//             <h5 className="mb-3">Active Alerts</h5>
-//             <Table bordered hover responsive>
-//               <thead>
-//                 <tr>
-//                   <th>Gold Type</th>
-//                   <th>Condition</th>
-//                   <th>Price</th>
-//                   <th>Notify By</th>
-//                   <th>Actions</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {alerts.map((a) => (
-//                   <tr key={a.id}>
-//                     <td>{a.type}</td>
-//                     <td>{a.condition}</td>
-//                     <td>₹{a.price}</td>
-//                     <td>{a.notify}</td>
-//                     <td>
-//                       <Button size="sm" variant="warning" className="me-2">
-//                         Edit
-//                       </Button>
-//                       <Button size="sm" variant="danger">
-//                         Delete
-//                       </Button>
-//                     </td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </Table>
-
-//             {/* --- Alert History Section --- */}
-//             <h5 className="mt-4 mb-3">Alert History</h5>
-//             <Table bordered hover responsive>
-//               <thead>
-//                 <tr>
-//                   <th>Gold Type</th>
-//                   <th>Condition</th>
-//                   <th>Price</th>
-//                   <th>Triggered At</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {history.map((h) => (
-//                   <tr key={h.id}>
-//                     <td>{h.type}</td>
-//                     <td>{h.condition}</td>
-//                     <td>₹{h.price}</td>
-//                     <td>{h.triggeredAt}</td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </Table>
-//           </Card>
-//         </Col>
-//       </Row>
-//     </Container>
-//   );
-// };
-
-// export default PriceAlertPage;
 import React, { useState } from "react";
 import "../styles/alerts.css";
+
+const NumberInputWithSpinner = ({ value, onChange, name, placeholder, min = 0, step = 0.01, style }) => {
+  const handleIncrement = () => {
+    const newValue = parseFloat(value || 0) + parseFloat(step);
+    onChange({ target: { name, value: newValue.toString() } });
+  };
+
+  const handleDecrement = () => {
+    const currentValue = parseFloat(value || 0);
+    const newValue = Math.max(min, currentValue - parseFloat(step));
+    onChange({ target: { name, value: newValue.toString() } });
+  };
+
+  return (
+    <div className="number-input-wrapper">
+      <input
+        type="number"
+        className="control"
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        min={min}
+        step={step}
+        style={style}
+      />
+      <div className="spinner-buttons">
+        <button
+          type="button"
+          className="spinner-btn up"
+          onClick={handleIncrement}
+        />
+        <button
+          type="button"
+          className="spinner-btn down"
+          onClick={handleDecrement}
+        />
+      </div>
+    </div>
+  );
+};
+
 
 export default function PriceAlerts() {
   // ---- fake data (frontend only) ----
@@ -232,16 +138,22 @@ export default function PriceAlerts() {
                 <option>Email, In-App</option>
               </select>
             </div>
-            <div className="col">
-              <input
-                className="control"
-                type="number"
-                name="price"
-                placeholder="Enter price"
-                value={form.price}
-                onChange={onChange}
-              />
-            </div>
+           <div className="col">
+  <NumberInputWithSpinner
+    name="price"
+    placeholder="Enter price"
+    value={form.price}
+    onChange={onChange}
+    min={0.01}
+    step={0.01}
+    style={{
+      // backgroundColor: '#2d3748',
+      // borderColor: '#4a5568',
+      color: '#e2e8f0'
+    }}
+  />
+</div>
+
           </div>
 
           <button type="submit" className="gold-btn">Set Alert</button>

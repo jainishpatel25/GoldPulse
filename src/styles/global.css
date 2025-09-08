@@ -10,3 +10,8 @@ body, html {
   margin: 0;
   padding: 0;
 }
+:root {
+  --panel: #1a1815;
+  --text: #e9e6dd;
+   --line: #3a352c;
+}
