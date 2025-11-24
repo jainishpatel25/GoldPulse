@@ -59,6 +59,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Auth.css";
+ import axios from "axios";
+
 
 function Register() {
   const navigate = useNavigate();
@@ -67,29 +69,35 @@ function Register() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleRegister = (e) => {
-    e.preventDefault();
 
-    // Simple validation
-    if (!name || !email || !password) {
-      setError("Please fill all fields");
-      return;
-    }
+const handleRegister = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    // Check if a user already exists
-    const existingUser = JSON.parse(localStorage.getItem("user"));
-    if (existingUser && existingUser.email === email) {
-      setError("User with this email already exists");
-      return;
-    }
+  if (!name || !email || !password) {
+    setError("Please fill all fields");
+    return;
+  }
 
-    // Save user in localStorage
-    const newUser = { name, email, password, profilePic: "" };
-    localStorage.setItem("user", JSON.stringify(newUser));
+  try {
+    const res = await axios.post("http://localhost:5000/api/auth/register", {
+      name,
+      email,
+      password,
+    });
 
-    // Redirect to login page
+    // Optionally auto-login after registration
+    // const loginRes = await axios.post("http://localhost:5000/api/auth/login", {
+    //   email,
+    //   password,
+    // });
+    // localStorage.setItem("token", loginRes.data.token);
+
     navigate("/login");
-  };
+  } catch (err) {
+    setError(err.response?.data?.message || "Registration failed");
+  }
+};
 
   return (
     <div className="auth-container d-flex flex-column align-items-center justify-content-center">

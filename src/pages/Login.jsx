@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Auth.css";
+ import axios from "axios";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -9,26 +11,33 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    const savedUser = JSON.parse(localStorage.getItem("user"));
+  try {
+    const res = await axios.post("http://localhost:5000/api/auth/login", {
+      email,
+      password,
+    });
 
-    if (!savedUser) {
-      setError("No registered user found. Please sign up first.");
-      return;
-    }
+    const {token,user } = res.data;
 
-    if (email === savedUser.email && password === savedUser.password) {
-      // Set logged-in user
-      localStorage.setItem("loggedInUser", JSON.stringify(savedUser));
-      // Dispatch custom event for navbar
-      window.dispatchEvent(new Event("login"));
-      navigate("/");
-    } else {
-      setError("Invalid email or password");
-    }
-  };
+    // ✅ Store token securely
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // Optional: store user info if returned
+    // localStorage.setItem("user", JSON.stringify(res.data.user));
+
+    // Notify navbar and redirect
+    window.dispatchEvent(new Event("login"));
+    navigate("/");
+  } catch (err) {
+    setError(err.response?.data?.message || "Login failed");
+  }
+};
+
 
   return (
     <div className="auth-container d-flex flex-column align-items-center justify-content-center">

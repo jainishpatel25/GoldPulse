@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -13,52 +14,40 @@ import "../../styles/custom.css";
 
 function InvestmentPerformance() {
   const [activeFilter, setActiveFilter] = useState("1M");
+  const [chartData, setChartData] = useState([]);
+  const [portfolioValue, setPortfolioValue] = useState(0);
+  const [changePercent, setChangePercent] = useState(0);
 
   const filters = ["1D", "1W", "1M", "6M", "1Y", "ALL"];
 
-  // Different datasets for each filter
-  const chartData = {
-    "1D": [
-      { name: "9AM", value: 10000 },
-      { name: "12PM", value: 10120 },
-      { name: "3PM", value: 10080 },
-      { name: "6PM", value: 10250 },
-    ],
-    "1W": [
-      { name: "Mon", value: 9800 },
-      { name: "Tue", value: 10050 },
-      { name: "Wed", value: 10100 },
-      { name: "Thu", value: 9900 },
-      { name: "Fri", value: 10200 },
-    ],
-    "1M": [
-      { name: "Week 1", value: 10000 },
-      { name: "Week 2", value: 11200 },
-      { name: "Week 3", value: 10800 },
-      { name: "Week 4", value: 12540 },
-    ],
-    "6M": [
-      { name: "Jan", value: 10000 },
-      { name: "Feb", value: 11200 },
-      { name: "Mar", value: 10800 },
-      { name: "Apr", value: 12000 },
-      { name: "May", value: 12540 },
-      { name: "Jun", value: 13000 },
-    ],
-    "1Y": [
-      { name: "Q1", value: 9500 },
-      { name: "Q2", value: 10500 },
-      { name: "Q3", value: 12000 },
-      { name: "Q4", value: 12540 },
-    ],
-    ALL: [
-      { name: "2019", value: 7000 },
-      { name: "2020", value: 9000 },
-      { name: "2021", value: 11000 },
-      { name: "2022", value: 12000 },
-      { name: "2023", value: 12540 },
-    ],
-  };
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+
+
+    const fetchChartData = async () => {
+      //  setLoading(true);
+
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/investments/performance?range=${activeFilter}` ,{
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        setChartData(res.data.data); // assuming { data: [...], value: 12540, change: 4.2 }
+        setPortfolioValue(res.data.value);
+        setChangePercent(res.data.change);
+      } catch (err) {
+        console.error("Error fetching performance data:", err);
+        setChartData([]); // fallback
+      }
+      //    finally {
+      //   setLoading(false);
+      // }
+    };
+
+    fetchChartData();
+  }, [activeFilter]);
 
   return (
     <div className="page-container">
@@ -82,15 +71,20 @@ function InvestmentPerformance() {
       <div className="chart-card">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div>
-            <div className="chart-value">$12,540</div>
+            <div className="chart-value">
+              ${portfolioValue.toLocaleString()}
+            </div>
             <div className="chart-sub">Portfolio Value</div>
           </div>
-          <div className="text-success">+4.2%</div>
+          <div className={changePercent >= 0 ? "text-success" : "text-danger"}>
+            {changePercent >= 0 ? "+" : "-"}
+            {Math.abs(changePercent).toFixed(2)}%
+          </div>
         </div>
 
         {/* Dynamic Line Chart */}
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData[activeFilter]}>
+          <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis dataKey="name" stroke="#aaa" />
             <YAxis stroke="#aaa" />

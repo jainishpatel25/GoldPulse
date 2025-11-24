@@ -1,8 +1,17 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "../styles/alerts.css";
 
-const NumberInputWithSpinner = ({ value, onChange, name, placeholder, min = 0, step = 0.01, style }) => {
+// --- Spinner Input Component ---
+const NumberInputWithSpinner = ({
+  value,
+  onChange,
+  name,
+  placeholder,
+  min = 0,
+  step = 0.01,
+  style,
+}) => {
   const handleIncrement = () => {
     const newValue = parseFloat(value || 0) + parseFloat(step);
     onChange({ target: { name, value: newValue.toString() } });
@@ -43,9 +52,8 @@ const NumberInputWithSpinner = ({ value, onChange, name, placeholder, min = 0, s
   );
 };
 
-
+// --- Main Component ---
 export default function PriceAlerts() {
-  // ---- fake data (frontend only) ----
   const [form, setForm] = useState({
     goldType: "24K",
     condition: "Above",
@@ -53,46 +61,121 @@ export default function PriceAlerts() {
     price: "",
   });
 
-  const [active, setActive] = useState([
-    { id: 1, type: "24K", condition: "Above", price: 1800, notify: "Email, In-App" },
-    { id: 2, type: "22K", condition: "Below", price: 1750, notify: "In-App" },
-    { id: 3, type: "24K", condition: "Equals", price: 1900, notify: "Email" },
-  ]);
+  const [active, setActive] = useState([]);
+  const [history, setHistory] = useState([]);
 
-  const [history] = useState([
-    { id: 11, type: "24K", condition: "Above", price: 1800, at: "2023-08-15 10:00 AM" },
-    { id: 12, type: "22K", condition: "Below", price: 1750, at: "2023-07-20 02:30 PM" },
-    { id: 13, type: "24K", condition: "Equals", price: 1900, at: "2023-06-05 09:45 AM" },
-  ]);
+  const token = localStorage.getItem("token");
+
+  // 🟢 Fetch alerts from backend
+  const fetchAlerts = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:5000/api/alerts", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setActive(data);
+    } catch (err) {
+      console.error("Error fetching alerts:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchAlerts();
+  }, []);
+
+  // 🟡 Add new alert
+  const onAdd = async (e) => {
+    e.preventDefault();
+    if (!form.price) return alert("Please enter a price");
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/alerts",
+        {
+          goldType: form.goldType,
+          condition: form.condition.toLowerCase(),
+          price: parseFloat(form.price),
+          channel: form.channel,
+        },
+
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      fetchAlerts();
+      setForm({ ...form, price: "" });
+    } catch (err) {
+      console.error("Error adding alert:", err);
+      alert("Error creating alert");
+    }
+  };
+
+  // 🔴 Delete alert
+  const onDelete = async (id) => {
+    if (!window.confirm("Delete this alert?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/alerts/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchAlerts();
+    } catch (err) {
+      console.error("Error deleting alert:", err);
+    }
+  };
+
+  // 🟠 Edit alert (update price)
+  const onEdit = async (id) => {
+    const cur = active.find((a) => a._id === id);
+    const next = window.prompt("Update target price (₹)", cur.price);
+    if (!next || isNaN(next)) return;
+    try {
+      await axios.put(
+        `http://localhost:5000/api/alerts/${id}`,
+        { price: parseFloat(next) },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      fetchAlerts();
+    } catch (err) {
+      console.error("Error updating alert:", err);
+    }
+  };
 
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const onAdd = (e) => {
-    e.preventDefault();
-    if (!form.price) return;
-    setActive((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        type: form.goldType,
-        condition: form.condition,
-        price: Number(form.price),
-        notify: form.channel,
-      },
-    ]);
-    setForm({ ...form, price: "" });
-  };
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return console.warn("No token found!");
 
-  const onDelete = (id) => setActive((prev) => prev.filter((a) => a.id !== id));
-  const onEdit = (id) => {
-    const cur = active.find((a) => a.id === id);
-    const next = window.prompt("Update target price ($)", cur.price);
-    if (next && !isNaN(next)) {
-      setActive((prev) =>
-        prev.map((a) => (a.id === id ? { ...a, price: Number(next) } : a))
-      );
-    }
-  };
+        const res = await fetch("http://localhost:5000/api/alerts/history", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch alert history: ${res.status}`);
+        }
+
+        const data = await res.json();
+        setHistory(data);
+      } catch (err) {
+        console.error("Error fetching history:", err);
+      }
+    };
+
+    // 🔁 Initial fetch when page loads
+    fetchHistory();
+
+    // 🕒 Auto-refresh every 30 seconds (adjust as needed)
+    const intervalId = setInterval(fetchHistory, 30000);
+
+    // 🧹 Cleanup interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <div className="alerts-page">
@@ -138,25 +221,22 @@ export default function PriceAlerts() {
                 <option>Email, In-App</option>
               </select>
             </div>
-           <div className="col">
-  <NumberInputWithSpinner
-    name="price"
-    placeholder="Enter price"
-    value={form.price}
-    onChange={onChange}
-    min={0.01}
-    step={0.01}
-    style={{
-      // backgroundColor: '#2d3748',
-      // borderColor: '#4a5568',
-      color: '#e2e8f0'
-    }}
-  />
-</div>
-
+            <div className="col">
+              <NumberInputWithSpinner
+                name="price"
+                placeholder="Enter price"
+                value={form.price}
+                onChange={onChange}
+                min={0.01}
+                step={0.01}
+                style={{ color: "#e2e8f0" }}
+              />
+            </div>
           </div>
 
-          <button type="submit" className="gold-btn">Set Alert</button>
+          <button type="submit" className="gold-btn">
+            Set Alert
+          </button>
         </form>
 
         {/* --- Active Alerts --- */}
@@ -168,34 +248,53 @@ export default function PriceAlerts() {
                 <th>Gold Type</th>
                 <th>Condition</th>
                 <th>Price</th>
-                <th>Notifications</th>
+                <th>Channel</th>
                 <th className="actions-col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {active.map((a) => (
-                <tr key={a.id}>
-                  <td>{a.type}</td>
-                  <td>{a.condition}</td>
-                  <td>${a.price.toLocaleString()}</td>
-                  <td>{a.notify}</td>
-                  <td className="actions-col">
-                    <button type="button" className="link-btn" onClick={() => onEdit(a.id)}>
-                      Edit
-                    </button>
-                    <span className="sep">|</span>
-                    <button type="button" className="link-btn danger" onClick={() => onDelete(a.id)}>
-                      Delete
-                    </button>
+              {active.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    No active alerts yet.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                active.map((a) => (
+                  <tr key={a._id}>
+                    <td>{a.goldType}</td>
+                    <td>{a.condition}</td>
+                    <td>₹{a.price.toLocaleString()}</td>
+                    <td>{a.channel}</td>
+                    <td className="actions-col">
+                      <button
+                        type="button"
+                        className="link-btn"
+                        onClick={() => onEdit(a._id)}
+                      >
+                        Edit
+                      </button>
+                      <span className="sep">|</span>
+                      <button
+                        type="button"
+                        className="link-btn danger"
+                        onClick={() => onDelete(a._id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* --- History --- */}
+        {/* --- History (placeholder for now) --- */}
         <h5 className="section-title">Alert History</h5>
+        <span>
+          <p className="small">Auto-refreshing every 30s...</p>
+        </span>
         <div className="table-wrap">
           <table className="custom-table">
             <thead>
@@ -204,17 +303,27 @@ export default function PriceAlerts() {
                 <th>Condition</th>
                 <th>Price</th>
                 <th>Triggered At</th>
+                <th>Channel</th>
               </tr>
             </thead>
             <tbody>
-              {history.map((h) => (
-                <tr key={h.id}>
-                  <td>{h.type}</td>
-                  <td>{h.condition}</td>
-                  <td>${h.price.toLocaleString()}</td>
-                  <td>{h.at}</td>
+              {history.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="text-center">
+                    No alerts triggered yet.
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                history.map((h) => (
+                  <tr key={h._id}>
+                    <td>{h.goldType}</td>
+                    <td>{h.condition}</td>
+                    <td>₹{h.price.toLocaleString()}</td>
+                    <td>{new Date(h.createdAt).toLocaleString()}</td>
+                    <td>{h.channel}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
