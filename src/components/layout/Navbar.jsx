@@ -45,10 +45,10 @@ function CustomNavbar() {
             <Nav.Link as={Link} to="/contact" className="nav-link-custom">Contact Us</Nav.Link>
           </Nav>
 
-          <Form className="d-flex align-items-center search-box my-2 my-lg-0">
+          {/* <Form className="d-flex align-items-center search-box my-2 my-lg-0">
             <FaSearch className="search-icon" />
             <FormControl type="search" placeholder="Search" className="search-input" />
-          </Form>
+          </Form> */}
 
           <div className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
             <FaBell className="text-white me-3 bell-icon" />
