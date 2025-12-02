@@ -32,7 +32,12 @@ function CustomNavbar() {
     <Navbar expand="lg" className="custom-navbar" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to="/" className="d-flex align-items-center text-white fw-bold">
-          <span className="me-2">🥇</span> Gold Tracker
+         <img
+    src={"public/goldpulse.png"}
+    alt="GoldPulse Logo"
+    style={{  width:"72px",height: "72px"}}
+    className="me-1"
+  /> Gold Pulse
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="navbar-content" />
@@ -44,11 +49,6 @@ function CustomNavbar() {
             <Nav.Link as={Link} to="/setalert" className="nav-link-custom">Alert</Nav.Link>
             <Nav.Link as={Link} to="/contact" className="nav-link-custom">Contact Us</Nav.Link>
           </Nav>
-
-          {/* <Form className="d-flex align-items-center search-box my-2 my-lg-0">
-            <FaSearch className="search-icon" />
-            <FormControl type="search" placeholder="Search" className="search-input" />
-          </Form> */}
 
           <div className="d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
             <FaBell className="text-white me-3 bell-icon" />
