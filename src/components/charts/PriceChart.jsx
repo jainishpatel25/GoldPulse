@@ -1,4 +1,139 @@
-import React, { useState } from "react";
+// //
+
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import {
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   ResponsiveContainer,
+//   CartesianGrid,
+// } from "recharts";
+// import "../../styles/main.css";
+
+// export default function PriceChart() {
+//   const [currency, setCurrency] = useState("USD");
+//   const [unit, setUnit] = useState("Grams"); // default to grams
+//   const [range, setRange] = useState("1Y");
+//   const [chartData, setChartData] = useState([]);
+//   const [latestPrice, setLatestPrice] = useState(0);
+
+//   // Fetch historical gold prices from backend
+//   useEffect(() => {
+//     const fetchGoldHistory = async () => {
+//       try {
+//         const res = await axios.get(
+//           `/api/gold/history?currency=${currency}&limit=50`
+//         );
+
+//         // Convert prices according to selected unit
+//         const unitMultiplier =
+//           unit === "Grams" ? 1 : unit === "Ounces" ? 31.1035 : 1000; // kg
+
+//         const data = res.data.map((item) => ({
+//           time: new Date(item.timestamp).toLocaleString(),
+//           price: Number((item.price * unitMultiplier).toFixed(2)),
+//         }));
+
+//         setChartData(data);
+//         if (data.length) setLatestPrice(data[data.length - 1].price);
+//       } catch (err) {
+//         console.error("Error fetching gold history:", err);
+//       }
+//     };
+
+//     fetchGoldHistory();
+//   }, [currency, unit, range]);
+
+//   return (
+//     <div className="price-chart-section text-white">
+//       <h5 className="fw-bold mb-3">Price Chart</h5>
+
+//       {/* Currency Selector */}
+//       <div className="selector-group">
+//         {["USD", "INR", "EUR", "GBP"].map((c) => (
+//           <button
+//             key={c}
+//             className={`selector-btn ${currency === c ? "active" : ""}`}
+//             onClick={() => setCurrency(c)}
+//           >
+//             {c}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* Unit Selector */}
+//       <div className="selector-group">
+//         {["Grams", "Ounces", "Kilograms"].map((u) => (
+//           <button
+//             key={u}
+//             className={`selector-btn ${unit === u ? "active" : ""}`}
+//             onClick={() => setUnit(u)}
+//           >
+//             {u}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* Range Selector */}
+//       <div className="selector-group">
+//         {["1D", "1W", "1M", "6M", "1Y", "All"].map((r) => (
+//           <button
+//             key={r}
+//             className={`selector-btn ${range === r ? "active" : ""}`}
+//             onClick={() => setRange(r)}
+//           >
+//             {r}
+//           </button>
+//         ))}
+//       </div>
+
+//       {/* Chart Card */}
+//       <div className="chart-card mt-3 p-3">
+//         <div className="mb-3">
+//           <h6>
+//             Gold Price ({currency}/{unit})
+//           </h6>
+//           <h3>
+//             {currency === "USD" ? "$" : ""}
+//             {latestPrice.toFixed(2)} {currency !== "USD" ? currency : ""}
+//           </h3>
+//           <p className="text-success">{range} +12.5%</p>
+//         </div>
+
+//         <ResponsiveContainer width="100%" height={250}>
+//           <LineChart data={chartData}>
+//             <CartesianGrid stroke="rgba(255,255,255,0.1)" vertical={false} />
+//             <XAxis dataKey="time" stroke="#aaa" />
+//             <YAxis stroke="#aaa" />
+//             <Tooltip
+//               contentStyle={{
+//                 background: "#222",
+//                 border: "none",
+//                 color: "#fff",
+//               }}
+//             />
+//             <Line
+//               type="monotone"
+//               dataKey="price"
+//               stroke="#d4af37"
+//               strokeWidth={2}
+//               dot={false}
+//             />
+//           </LineChart>
+//         </ResponsiveContainer>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -10,71 +145,77 @@ import {
 } from "recharts";
 import "../../styles/main.css";
 
-// Dummy data for different ranges (can later be replaced with API)
-const dummyRangeData = {
-  "1D": [
-    { time: "9AM", price: 1600 },
-    { time: "12PM", price: 1620 },
-    { time: "3PM", price: 1610 },
-    { time: "6PM", price: 1630 },
-  ],
-  "1W": [
-    { time: "Mon", price: 1500 },
-    { time: "Tue", price: 1520 },
-    { time: "Wed", price: 1550 },
-    { time: "Thu", price: 1580 },
-    { time: "Fri", price: 1600 },
-  ],
-  "1M": [
-    { time: "Week 1", price: 1400 },
-    { time: "Week 2", price: 1450 },
-    { time: "Week 3", price: 1500 },
-    { time: "Week 4", price: 1580 },
-  ],
-  "6M": [
-    { time: "Mar", price: 1200 },
-    { time: "Apr", price: 1300 },
-    { time: "May", price: 1400 },
-    { time: "Jun", price: 1500 },
-    { time: "Jul", price: 1600 },
-    { time: "Aug", price: 1650 },
-  ],
-  "1Y": [
-    { time: "Jan", price: 1000 },
-    { time: "Feb", price: 1100 },
-    { time: "Mar", price: 1200 },
-    { time: "Apr", price: 1300 },
-    { time: "May", price: 1400 },
-    { time: "Jun", price: 1500 },
-    { time: "Jul", price: 1600 },
-    { time: "Aug", price: 1650 },
-  ],
-  All: [
-    { time: "2020", price: 800 },
-    { time: "2021", price: 1000 },
-    { time: "2022", price: 1200 },
-    { time: "2023", price: 1400 },
-    { time: "2024", price: 1650 },
-  ],
+const CURRENCY_SYMBOLS = {
+  USD: "$",
+  INR: "₹",
+  EUR: "€",
+  GBP: "£",
 };
 
 export default function PriceChart() {
   const [currency, setCurrency] = useState("USD");
-  const [unit, setUnit] = useState("Ounces");
+  const [unit, setUnit] = useState("Grams"); // default to grams
   const [range, setRange] = useState("1Y");
+  const [chartData, setChartData] = useState([]);
+  const [latestPrice, setLatestPrice] = useState(0);
 
-  // Get dummy data based on selected range
-  const data = dummyRangeData[range];
+ useEffect(() => {
+  const fetchGoldHistory = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/gold/history", // 👈 FULL backend URL
+        {
+          params: {
+            currency,
+            limit: 50,
+          },
+        }
+      );
 
-  // Dummy conversion rates for Currency
-  const conversionRates = { USD: 1, INR: 83, EUR: 0.92, GBP: 0.78 };
+      console.log("Raw history response:", res.data);
+      console.log("Type of res.data:", typeof res.data);
+      console.log("IsArray:", Array.isArray(res.data));
 
-  // Dummy unit multiplier
-  const unitMultiplier = { Grams: 0.032, Ounces: 1, Kilograms: 32 };
+      // ✅ backend already returns an array
+      const items = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data?.history)
+        ? res.data.history
+        : [];
 
-  // Last price converted according to selected currency and unit
-  const latestPrice =
-    data[data.length - 1].price * conversionRates[currency] * unitMultiplier[unit];
+      const unitMultiplier =
+        unit === "Grams" ? 1 : unit === "Ounces" ? 31.1035 : 1000; // kg
+
+      const data = items.map((item) => {
+        const ts = item.timestamp || item.date;
+        return {
+          time: ts ? new Date(ts).toLocaleString() : "",
+          price: Number((item.price * unitMultiplier).toFixed(2)),
+        };
+      });
+
+      console.log("Mapped chart data:", data);
+
+      setChartData(data);
+      if (data.length) {
+        setLatestPrice(data[data.length - 1].price);
+      } else {
+        setLatestPrice(0);
+      }
+    } catch (err) {
+      console.error("Error fetching gold history:", err);
+      setChartData([]);
+      setLatestPrice(0);
+    }
+  };
+
+  fetchGoldHistory();
+}, [currency, unit, range]);
+
+
+  const symbol = CURRENCY_SYMBOLS[currency] || "";
+  const displayPrice =
+    chartData.length === 0 ? "--" : latestPrice.toFixed(2);
 
   return (
     <div className="price-chart-section text-white">
@@ -106,7 +247,7 @@ export default function PriceChart() {
         ))}
       </div>
 
-      {/* Range Selector */}
+      {/* Range Selector (currently just UI – backend uses limit only) */}
       <div className="selector-group">
         {["1D", "1W", "1M", "6M", "1Y", "All"].map((r) => (
           <button
@@ -122,21 +263,31 @@ export default function PriceChart() {
       {/* Chart Card */}
       <div className="chart-card mt-3 p-3">
         <div className="mb-3">
-          <h6>Gold Price ({currency}/{unit})</h6>
+          <h6>
+            Gold Price ({currency}/{unit})
+          </h6>
           <h3>
-            {currency === "USD" ? "$" : ""}
-            {latestPrice.toFixed(2)} {currency !== "USD" ? currency : ""}
+            {symbol}
+            {displayPrice}
+            {!symbol && chartData.length !== 0 ? ` ${currency}` : ""}
           </h3>
+          {/* Fake % for now; later you can compute real change */}
           <p className="text-success">{range} +12.5%</p>
+          {/* Small debug indicator so you *see* that data exists */}
+          <small>Points loaded: {chartData.length}</small>
         </div>
 
         <ResponsiveContainer width="100%" height={250}>
-          <LineChart data={data}>
+          <LineChart data={chartData}>
             <CartesianGrid stroke="rgba(255,255,255,0.1)" vertical={false} />
             <XAxis dataKey="time" stroke="#aaa" />
             <YAxis stroke="#aaa" />
             <Tooltip
-              contentStyle={{ background: "#222", border: "none", color: "#fff" }}
+              contentStyle={{
+                background: "#222",
+                border: "none",
+                color: "#fff",
+              }}
             />
             <Line
               type="monotone"
@@ -144,6 +295,7 @@ export default function PriceChart() {
               stroke="#d4af37"
               strokeWidth={2}
               dot={false}
+              isAnimationActive={false}
             />
           </LineChart>
         </ResponsiveContainer>

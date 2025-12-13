@@ -1,86 +1,77 @@
-// // src/components/Overview.js
-// import React from "react";
-// import { Row, Col, Card } from "react-bootstrap";
-// import "../styles/main.css";
 
-// function Overview() {
-//   return (
-//     <div className="overview-container px-4 py-5">
-//       <h2 className="overview-title">Gold Market Overview</h2>
-//       <p className="overview-subtitle">Last updated: 10s ago</p>
-
-//       <Row className="mt-4">
-//         {/* Current Price */}
-//         <Col md={4}>
-//           <Card className="overview-card">
-//             <Card.Body>
-//               <h6 className="card-label">Current Price</h6>
-//               <h3 className="card-value">$1,950.50</h3>
-//               <p className="card-change">+0.27%</p>
-//             </Card.Body>
-//           </Card>
-//         </Col>
-
-//         {/* Change */}
-//         <Col md={4}>
-//           <Card className="overview-card">
-//             <Card.Body>
-//               <h6 className="card-label">Change</h6>
-//               <h3 className="card-value">+ $5.20 (0.27%)</h3>
-//               <p className="card-change">+0.27%</p>
-//             </Card.Body>
-//           </Card>
-//         </Col>
-
-//         {/* High/Low */}
-//         <Col md={4}>
-//           <Card className="overview-card">
-//             <Card.Body>
-//               <h6 className="card-label">High/Low</h6>
-//               <h3 className="card-value">$1,955.00 /</h3>
-//               <h3 className="card-value">$1,948.00</h3>
-//               <p className="card-change">+0.27%</p>
-//             </Card.Body>
-//           </Card>
-//         </Col>
-//       </Row>
-//     </div>
-//   );
-// }
-
-// export default Overview;
 import { Row, Col, Card } from "react-bootstrap";
 import "../styles/main.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+
+const SYMBOLS = { USD: "$", EUR: "€", GBP: "£", INR: "₹", JPY: "¥" };
+const getSymbol = (code) => SYMBOLS[code] || code || "$";
 
 function Overview() {
   const [goldData, setGoldData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const prefCurrency = useMemo(
+    () => (localStorage.getItem("pref_currency") || "USD").toUpperCase(),
+    []
+  );
+  const symbol = getSymbol(prefCurrency);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/gold/live")
-      .then((res) => setGoldData(res.data))
-      .catch((err) => console.error("Error fetching gold price:", err));
-  }, []);
+    const fetchGold = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/gold/live?currency=${prefCurrency}`
+        );
+        setGoldData(res.data);
+      } catch (err) {
+        console.error("Error fetching gold price:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //
-  return !goldData ? (
+    fetchGold();
+  }, [prefCurrency]);
+
+  if (loading) {
+    return (
+      <div className="overview-container px-3 px-md-4 py-4 py-md-4">
+        <h2 className="overview-title text-center text-md-start">
+          Gold Market Overview
+        </h2>
+        <p className="overview-subtitle text-center text-md-start">
+          Loading gold data...
+        </p>
+      </div>
+    );
+  }
+
+  if (!goldData) {
+    return (
+      <div className="overview-container px-3 px-md-4 py-4 py-md-4">
+        <h2 className="overview-title text-center text-md-start">
+          Gold Market Overview
+        </h2>
+        <p className="overview-subtitle text-center text-md-start text-danger">
+          Unable to load gold data. Showing nothing for now.
+        </p>
+      </div>
+    );
+  }
+
+  const { timestamp, price, ch, chp, high_price, low_price } = goldData;
+
+  return (
     <div className="overview-container px-3 px-md-4 py-4 py-md-4">
       <h2 className="overview-title text-center text-md-start">
         Gold Market Overview
       </h2>
       <p className="overview-subtitle text-center text-md-start">
-        Loading gold data...
-      </p>
-    </div>
-  ) : (
-    <div className="overview-container px-3 px-md-4 py-4 py-md-4">
-      <h2 className="overview-title text-center text-md-start">
-        Gold Market Overview
-      </h2>
-      <p className="overview-subtitle text-center text-md-start">
-        Last updated: {new Date(goldData.timestamp * 1000).toLocaleTimeString()}
+        Last updated:{" "}
+        {timestamp
+          ? new Date(timestamp * 1000).toLocaleTimeString()
+          : "—"}
       </p>
 
       <Row className="mt-4">
@@ -90,13 +81,13 @@ function Overview() {
             <Card.Body>
               <h6 className="card-label">Current Price</h6>
               <h3 className="card-value">
-                {typeof goldData.price === "number"
-                  ? `$${goldData.price.toFixed(2)}`
+                {typeof price === "number"
+                  ? `${symbol}${price.toFixed(2)}`
                   : "N/A"}
               </h3>
               <p className="card-change">
-                {typeof goldData.chp === "number"
-                  ? `${goldData.chp > 0 ? "+" : ""}${goldData.chp.toFixed(2)}%`
+                {typeof chp === "number"
+                  ? `${chp > 0 ? "+" : ""}${chp.toFixed(2)}%`
                   : "N/A"}
               </p>
             </Card.Body>
@@ -109,16 +100,15 @@ function Overview() {
             <Card.Body>
               <h6 className="card-label">Change</h6>
               <h3 className="card-value">
-                {typeof goldData.ch === "number" &&
-                typeof goldData.chp === "number"
-                  ? `${goldData.ch > 0 ? "+" : ""} $${goldData.ch.toFixed(
+                {typeof ch === "number" && typeof chp === "number"
+                  ? `${ch > 0 ? "+" : ""}${symbol}${Math.abs(ch).toFixed(
                       2
-                    )} (${goldData.chp.toFixed(2)}%)`
+                    )} (${chp.toFixed(2)}%)`
                   : "N/A"}
               </h3>
               <p className="card-change">
-                {typeof goldData.chp === "number"
-                  ? `${goldData.chp > 0 ? "+" : ""}${goldData.chp.toFixed(2)}%`
+                {typeof chp === "number"
+                  ? `${chp > 0 ? "+" : ""}${chp.toFixed(2)}%`
                   : "N/A"}
               </p>
             </Card.Body>
@@ -131,18 +121,18 @@ function Overview() {
             <Card.Body>
               <h6 className="card-label">High/Low</h6>
               <h3 className="card-value">
-                {typeof goldData.high_price === "number"
-                  ? `$${goldData.high_price.toFixed(2)} /`
+                {typeof high_price === "number"
+                  ? `${symbol}${high_price.toFixed(2)} /`
                   : "N/A /"}
               </h3>
               <h3 className="card-value">
-                {typeof goldData.low_price === "number"
-                  ? `$${goldData.low_price.toFixed(2)}`
+                {typeof low_price === "number"
+                  ? `${symbol}${low_price.toFixed(2)}`
                   : "N/A"}
               </h3>
               <p className="card-change">
-                {typeof goldData.chp === "number"
-                  ? `${goldData.chp > 0 ? "+" : ""}${goldData.chp.toFixed(2)}%`
+                {typeof chp === "number"
+                  ? `${chp > 0 ? "+" : ""}${chp.toFixed(2)}%`
                   : "N/A"}
               </p>
             </Card.Body>

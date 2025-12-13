@@ -2,6 +2,10 @@ const Alert = require("../models/alert");
 
 const AlertHistory = require("../models/alertHistory");
 
+// ✅ add these:
+const User = require("../models/User");
+const { convertCurrency } = require("../utils/currencyConverter");
+
 // Create a new alert
 exports.createAlert = async (req, res) => {
   try {
@@ -27,10 +31,36 @@ exports.createAlert = async (req, res) => {
 };
 
 // Get all alerts for the logged-in user
+// exports.getUserAlerts = async (req, res) => {
+//   try {
+//     const alerts = await Alert.find({ user: req.userId }).sort({ createdAt: -1 });
+//     res.json(alerts);
+//   } catch (error) {
+//     console.error("Error fetching alerts:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
 exports.getUserAlerts = async (req, res) => {
   try {
+    // find user to get preferred currency
+    const user = await User.findById(req.userId);
+    const preferredCurrency = user?.preferredCurrency || "USD";
+
     const alerts = await Alert.find({ user: req.userId }).sort({ createdAt: -1 });
-    res.json(alerts);
+
+    // convert each alert price from USD -> preferredCurrency
+    const convertedAlerts = await Promise.all(
+      alerts.map(async (a) => {
+        const displayPrice = await convertCurrency(a.price, preferredCurrency);
+        return {
+          ...a.toObject(),
+          displayCurrency: preferredCurrency,
+          displayPrice,
+        };
+      })
+    );
+
+    res.json(convertedAlerts);
   } catch (error) {
     console.error("Error fetching alerts:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -67,19 +97,54 @@ exports.deleteAlert = async (req, res) => {
   }
 };
 
+// exports.getAlertHistory = async (req, res) => {
+//   try {
+//     // 🧩 Your auth sets req.userId directly
+//     const userId = req.user?.userId || req.userId;
+
+//     if (!userId) {
+//       return res.status(401).json({ message: "Unauthorized: No user found in token" });
+//     }
+
+//     const histories = await AlertHistory.find({ user: userId }).sort({ createdAt: -1 });
+//     res.status(200).json(histories);
+//   } catch (error) {
+//     console.error("Error fetching alert history:", error);
+//     res.status(500).json({ message: "Server error fetching alert history" });
+//   }
+// };
 exports.getAlertHistory = async (req, res) => {
   try {
-    // 🧩 Your auth sets req.userId directly
-    const userId = req.user?.userId || req.userId;
-
+    const userId = req.userId; // your auth middleware sets this
     if (!userId) {
-      return res.status(401).json({ message: "Unauthorized: No user found in token" });
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No user found in token" });
     }
 
-    const histories = await AlertHistory.find({ user: userId }).sort({ createdAt: -1 });
-    res.status(200).json(histories);
+    const user = await User.findById(userId);
+    const preferredCurrency = user?.preferredCurrency || "USD";
+
+    const histories = await AlertHistory.find({ user: userId }).sort({
+      createdAt: -1,
+    });
+
+    const convertedHistory = await Promise.all(
+      histories.map(async (h) => {
+        const displayPrice = await convertCurrency(h.price, preferredCurrency);
+        return {
+          ...h.toObject(),
+          displayCurrency: preferredCurrency,
+          displayPrice,
+        };
+      })
+    );
+
+    res.status(200).json(convertedHistory);
   } catch (error) {
     console.error("Error fetching alert history:", error);
-    res.status(500).json({ message: "Server error fetching alert history" });
+    res
+      .status(500)
+      .json({ message: "Server error fetching alert history" });
   }
 };
